@@ -38,7 +38,7 @@ class Home extends StatelessWidget {
               ],
             ),
             body: ConditionalBuilder(
-              condition: state is! NewsGetBusinessLoadingState,
+              condition: state is! NewsGetBusinessLoadingState && newsCubit.businessArticles.length > 0,
               builder: (context) =>
                   newsCubit.screens[newsCubit.selectedPageIndex],
               fallback: (context) => Center(child: CircularProgressIndicator()),

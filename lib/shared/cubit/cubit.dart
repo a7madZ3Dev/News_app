@@ -61,22 +61,26 @@ class NewsCubit extends Cubit<NewsStates> {
 
   // operation (get business data)
   void getBusiness() {
-    emit(NewsGetBusinessLoadingState());
+    if (businessArticles.isEmpty) {
+      emit(NewsGetBusinessLoadingState());
 
-    DioHelper.getDataFromApi(
-      url: 'v2/top-headlines',
-      query: {
-        'country': 'us',
-        'category': 'business',
-        'apiKey': '$kApiKey',
-      },
-    ).then((value) {
-      businessArticles = value;
+      DioHelper.getDataFromApi(
+        url: 'v2/top-headlines',
+        query: {
+          'country': 'us',
+          'category': 'business',
+          'apiKey': '$kApiKey',
+        },
+      ).then((value) {
+        businessArticles = value;
 
+        emit(NewsGetBusinessSuccessState());
+      }).catchError((onError) {
+        emit(NewsGetBusinessErrorState(onError.toString()));
+      });
+    } else {
       emit(NewsGetBusinessSuccessState());
-    }).catchError((onError) {
-      emit(NewsGetBusinessErrorState(onError.toString()));
-    });
+    }
   }
 
   // operation (get sport data)
@@ -126,7 +130,7 @@ class NewsCubit extends Cubit<NewsStates> {
       emit(NewsGetScienceSuccessState());
     }
   }
-  
+
   // search for any key word
   void getSearch(String value) {
     emit(NewsGetSearchLoadingState());
@@ -146,11 +150,11 @@ class NewsCubit extends Cubit<NewsStates> {
       emit(NewsGetSearchErrorState(error.toString()));
     });
   }
-  
-  // when ending with search 
-  void clearList(){
-     searchArticles = [];
-     emit(NewsGetSearchDoneState());
+
+  // when ending with search
+  void clearList() {
+    searchArticles = [];
+    emit(NewsGetSearchDoneState());
   }
 }
 
