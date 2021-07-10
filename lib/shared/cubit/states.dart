@@ -14,6 +14,7 @@ class NewsGetBusinessErrorState extends NewsStates {
   NewsGetBusinessErrorState(this.error);
 }
 
+
 class NewsGetSportsLoadingState extends NewsStates {}
 
 class NewsGetSportsSuccessState extends NewsStates {}
@@ -23,6 +24,7 @@ class NewsGetSportsErrorState extends NewsStates {
 
   NewsGetSportsErrorState(this.error);
 }
+
 
 class NewsGetScienceLoadingState extends NewsStates {}
 
@@ -34,15 +36,20 @@ class NewsGetScienceErrorState extends NewsStates {
   NewsGetScienceErrorState(this.error);
 }
 
+
 class NewsGetSearchLoadingState extends NewsStates {}
 
 class NewsGetSearchSuccessState extends NewsStates {}
+
+class NewsGetSearchDoneState extends NewsStates {}
 
 class NewsGetSearchErrorState extends NewsStates {
   final String error;
 
   NewsGetSearchErrorState(this.error);
 }
+
+
 
 // for them mode
 abstract class AppStates {}

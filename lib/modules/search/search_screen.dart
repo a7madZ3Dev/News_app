@@ -16,10 +16,11 @@ class SearchScreen extends StatelessWidget {
         var list = NewsCubit.get(context).searchArticles;
 
         return WillPopScope(
-          onWillPop: () {
+          onWillPop: () async {
+            searchController.clear();
             Navigator.of(context).pop();
             NewsCubit.get(context).clearList();
-            searchController.clear();
+            return true;
           },
           child: Scaffold(
             appBar: AppBar(
@@ -27,9 +28,9 @@ class SearchScreen extends StatelessWidget {
               leading: IconButton(
                   icon: Icon(Icons.arrow_back),
                   onPressed: () {
+                    searchController.clear();
                     Navigator.of(context).pop();
                     NewsCubit.get(context).clearList();
-                    searchController.clear();
                   }),
             ),
             body: Column(

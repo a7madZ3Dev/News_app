@@ -155,7 +155,7 @@ Widget articleBuilder(List<Article> list, BuildContext context,
         physics: BouncingScrollPhysics(),
         itemBuilder: (context, index) => buildArticleItem(list[index], context),
         separatorBuilder: (context, index) => myDivider(),
-        itemCount: 10,
+        itemCount: list.length,
       ),
       fallback: (context) =>
           isSearch ? Container() : Center(child: CircularProgressIndicator()),

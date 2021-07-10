@@ -150,7 +150,7 @@ class NewsCubit extends Cubit<NewsStates> {
   // when ending with search 
   void clearList(){
      searchArticles = [];
-     emit(NewsGetSearchSuccessState());
+     emit(NewsGetSearchDoneState());
   }
 }
 
