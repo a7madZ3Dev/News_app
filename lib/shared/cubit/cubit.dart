@@ -61,7 +61,7 @@ class NewsCubit extends Cubit<NewsStates> {
 
   // operation (get business data)
   void getBusiness() {
-    if (businessArticles.isEmpty) {
+    if (businessArticles.length == 0) {
       emit(NewsGetBusinessLoadingState());
 
       DioHelper.getDataFromApi(
@@ -152,9 +152,9 @@ class NewsCubit extends Cubit<NewsStates> {
   }
 
   // when ending with search
-  void clearList() {
+  void clearList({bool navigator}) {
     searchArticles = [];
-    emit(NewsGetSearchDoneState());
+    if (!navigator) emit(NewsGetSearchDoneState());
   }
 }
 

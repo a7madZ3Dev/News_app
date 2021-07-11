@@ -19,7 +19,7 @@ class SearchScreen extends StatelessWidget {
           onWillPop: () async {
             searchController.clear();
             Navigator.of(context).pop();
-            NewsCubit.get(context).clearList();
+            NewsCubit.get(context).clearList(navigator: true);
             return true;
           },
           child: Scaffold(
@@ -30,7 +30,7 @@ class SearchScreen extends StatelessWidget {
                   onPressed: () {
                     searchController.clear();
                     Navigator.of(context).pop();
-                    NewsCubit.get(context).clearList();
+                    NewsCubit.get(context).clearList(navigator: true);
                   }),
             ),
             body: Column(
@@ -44,7 +44,7 @@ class SearchScreen extends StatelessWidget {
                       if (value != null && value.isNotEmpty)
                         BlocProvider.of<NewsCubit>(context).getSearch(value);
                       else
-                        NewsCubit.get(context).clearList();
+                        NewsCubit.get(context).clearList(navigator: false);
                     },
                     validate: (String value) {
                       if (value.isEmpty) {

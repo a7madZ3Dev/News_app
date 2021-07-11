@@ -1,7 +1,12 @@
+import 'dart:io' show Platform;
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:desktop_window/desktop_window.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import './shared/cubit/cubit.dart';
 import './layout/home_layout.dart';
@@ -9,9 +14,18 @@ import './shared/cubit/states.dart';
 import './shared/bloc_observer.dart';
 import './shared/network/remote/dio_helper.dart';
 
-void main() {
-  Bloc.observer = MyBlocObserver();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
+  Bloc.observer = MyBlocObserver();
+
+  if (!kIsWeb) {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      /// set minimum width and height on app
+      await DesktopWindow.setMinWindowSize((Size(800.0, 500.0)));
+    }
+  }
+
   runApp(MyApp());
 }
 
@@ -41,7 +55,8 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               scaffoldBackgroundColor: Colors.white,
               primarySwatch: Colors.deepOrange,
-              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.deepOrange),
+              textSelectionTheme:
+                  TextSelectionThemeData(cursorColor: Colors.deepOrange),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                   backgroundColor: Colors.deepOrange),
               iconTheme: IconThemeData(color: Colors.black),
@@ -74,7 +89,8 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.deepOrange,
               scaffoldBackgroundColor: Colors.black,
               primaryColorDark: Colors.deepOrange,
-              textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.deepOrange),
+              textSelectionTheme:
+                  TextSelectionThemeData(cursorColor: Colors.deepOrange),
               floatingActionButtonTheme: FloatingActionButtonThemeData(
                   backgroundColor: Colors.deepOrange),
               textTheme: TextTheme(
@@ -107,7 +123,11 @@ class MyApp extends StatelessWidget {
                   elevation: 20.0),
             ),
             themeMode: appCubit.isDark ? ThemeMode.dark : ThemeMode.light,
-            home: Home(),
+            home: ScreenTypeLayout(
+              mobile: Home(),
+              desktop: Home(),
+              tablet: Home(),
+            ),
           );
         },
       ),

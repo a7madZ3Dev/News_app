@@ -39,7 +39,7 @@ Widget defaultFormField({
       decoration: InputDecoration(
         labelText: label,
         filled: true,
-        fillColor:fillColor ,
+        fillColor: fillColor,
         prefixIcon: Icon(
           prefix,
         ),
@@ -83,20 +83,28 @@ Widget buildArticleItem(Article article, BuildContext context) => InkWell(
                 //   },
                 // ),
               ),
-              child: Image.network(
-                article.imageUrl != null ? article.imageUrl : '',
-                fit: BoxFit.cover,
-                errorBuilder: (BuildContext context, Object exception,
-                    StackTrace stackTrace) {
-                  return Image(
-                    image: AssetImage(
-                      'assets/placeholder.png',
+              child: article.imageUrl != null
+                  ? Image.network(
+                      article.imageUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace stackTrace) {
+                        return Image(
+                          image: AssetImage(
+                            'assets/placeholder.png',
+                          ),
+                          height: 120.0,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                  : Image(
+                      image: AssetImage(
+                        'assets/placeholder.png',
+                      ),
+                      height: 120.0,
+                      fit: BoxFit.cover,
                     ),
-                    height: 120.0,
-                    fit: BoxFit.cover,
-                  );
-                },
-              ),
             ),
             SizedBox(
               width: 15.0,
