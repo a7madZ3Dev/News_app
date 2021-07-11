@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../../shared/cubit/cubit.dart';
 import '../../shared/cubit/states.dart';
@@ -14,9 +15,19 @@ class ScienceScreen extends StatelessWidget {
     return BlocConsumer<NewsCubit, NewsStates>(
       listener: (context, state) {},
       builder: (context, state) {
-        return articleBuilder(
-          newsCubit.scienceArticles,
-          context,
+        return ScreenTypeLayout(
+          mobile: articleBuilder(
+            newsCubit.scienceArticles,
+            context,
+          ),
+          tablet: articleBuilderDeskTop(
+            newsCubit.scienceArticles,
+            context,
+          ),
+          desktop: articleBuilderDeskTop(
+            newsCubit.scienceArticles,
+            context,
+          ),
         );
       },
     );

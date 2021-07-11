@@ -55,7 +55,7 @@ Widget defaultFormField({
       ),
     );
 
-// for single item
+// for single item  on mobile
 Widget buildArticleItem(Article article, BuildContext context) => InkWell(
       onTap: () {
         navigateTo(
@@ -154,7 +154,75 @@ Widget myDivider() => Padding(
       ),
     );
 
-//create the screen
+// for single item  on mobile
+Widget buildArticleDeskTopItem(Article article, BuildContext context) =>
+    InkWell(
+      onTap: () {
+        navigateTo(
+          context,
+          WebViewScreen(article.articleUrl),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Container(
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  width: constraints.maxWidth,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(
+                      10.0,
+                    ),
+                  ),
+                  child: article.imageUrl != null
+                      ? Image.network(
+                          article.imageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (BuildContext context, Object exception,
+                              StackTrace stackTrace) {
+                            return Image(
+                              image: AssetImage(
+                                'assets/placeholder.png',
+                              ),
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        )
+                      : Image(
+                          image: AssetImage(
+                            'assets/placeholder.png',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text(
+                '${article.title}',
+                style: Theme.of(context).textTheme.subtitle1,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                DateFormat.yMMMd().format(article.publishedAt),
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+//created for the mobile screen
 Widget articleBuilder(List<Article> list, BuildContext context,
         {isSearch = false}) =>
     ConditionalBuilder(
@@ -164,6 +232,27 @@ Widget articleBuilder(List<Article> list, BuildContext context,
         itemBuilder: (context, index) => buildArticleItem(list[index], context),
         separatorBuilder: (context, index) => myDivider(),
         itemCount: list.length,
+      ),
+      fallback: (context) =>
+          isSearch ? Container() : Center(child: CircularProgressIndicator()),
+    );
+
+//created for the deskTop screen
+Widget articleBuilderDeskTop(List<Article> list, BuildContext context,
+        {isSearch = false}) =>
+    ConditionalBuilder(
+      condition: list.length > 0,
+      builder: (context) => GridView.builder(
+        physics: BouncingScrollPhysics(),
+        itemBuilder: (context, index) =>
+            buildArticleDeskTopItem(list[index], context),
+        itemCount: list.length,
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: MediaQuery.of(context).size.height * 0.50,
+          childAspectRatio: 3 / 3,
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 5,
+        ),
       ),
       fallback: (context) =>
           isSearch ? Container() : Center(child: CircularProgressIndicator()),

@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desktop_window/desktop_window.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 import './shared/cubit/cubit.dart';
 import './layout/home_layout.dart';
@@ -22,7 +21,7 @@ void main() async {
   if (!kIsWeb) {
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       /// set minimum width and height on app
-      await DesktopWindow.setMinWindowSize((Size(800.0, 500.0)));
+      await DesktopWindow.setMinWindowSize((Size(420.0, 420.0)));
     }
   }
 
@@ -123,11 +122,7 @@ class MyApp extends StatelessWidget {
                   elevation: 20.0),
             ),
             themeMode: appCubit.isDark ? ThemeMode.dark : ThemeMode.light,
-            home: ScreenTypeLayout(
-              mobile: Home(),
-              desktop: Home(),
-              tablet: Home(),
-            ),
+            home: Home(),
           );
         },
       ),
