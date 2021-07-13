@@ -15,10 +15,10 @@ import '../../modules/business/business.dart';
 class NewsCubit extends Cubit<NewsStates> {
   NewsCubit() : super(NewsInitialState());
 
-  // get object from cubit class
+  /// get object from cubit class
   static NewsCubit get(context) => BlocProvider.of<NewsCubit>(context);
 
-  // screens
+  /// screens
   final List<Object> screens = [
     BusinessScreen(),
     SportsScreen(),
@@ -29,8 +29,9 @@ class NewsCubit extends Cubit<NewsStates> {
   List<Article> scienceArticles = [];
   List<Article> searchArticles = [];
   int selectedPageIndex = 0;
+  int articleSelected = 0;
 
-  // tabs for nav bar
+  /// tabs for nav bar
   List<BottomNavigationBarItem> getBottomNavBarList(BuildContext context) {
     List<BottomNavigationBarItem> bottomItem = [
       BottomNavigationBarItem(
@@ -49,17 +50,30 @@ class NewsCubit extends Cubit<NewsStates> {
     return bottomItem;
   }
 
-  // change number for pages
+  /// change number for pages
   void changeIndex(int index) {
     selectedPageIndex = index;
-    if (index == 1)
+    if (index == 0) {
+      getBusiness();
+      articleSelected = 0;
+    } else if (index == 1) {
       getSports();
-    else if (index == 2) getScience();
+      articleSelected = 0;
+    } else if (index == 2) {
+      getScience();
+      articleSelected = 0;
+    }
 
     emit(NewsBottomNavBarState());
   }
 
-  // operation (get business data)
+  /// Change the state of the selected item
+  void changeItemSelectedState({int index}) {
+    articleSelected = index;
+    emit(NewsItemSelectedState());
+  }
+
+  /// operation (get business data)
   void getBusiness() {
     if (businessArticles.length == 0) {
       emit(NewsGetBusinessLoadingState());
@@ -73,17 +87,14 @@ class NewsCubit extends Cubit<NewsStates> {
         },
       ).then((value) {
         businessArticles = value;
-
         emit(NewsGetBusinessSuccessState());
       }).catchError((onError) {
         emit(NewsGetBusinessErrorState(onError.toString()));
       });
-    } else {
-      emit(NewsGetBusinessSuccessState());
     }
   }
 
-  // operation (get sport data)
+  /// operation (get sport data)
   void getSports() {
     if (sportArticles.length == 0) {
       emit(NewsGetSportsLoadingState());
@@ -97,17 +108,14 @@ class NewsCubit extends Cubit<NewsStates> {
         },
       ).then((value) {
         sportArticles = value;
-
         emit(NewsGetSportsSuccessState());
       }).catchError((onError) {
         emit(NewsGetSportsErrorState(onError.toString()));
       });
-    } else {
-      emit(NewsGetSportsSuccessState());
     }
   }
 
-  // operation (get science data)
+  /// operation (get science data)
   void getScience() {
     if (scienceArticles.length == 0) {
       emit(NewsGetScienceLoadingState());
@@ -126,12 +134,10 @@ class NewsCubit extends Cubit<NewsStates> {
       }).catchError((onError) {
         emit(NewsGetScienceErrorState(onError.toString()));
       });
-    } else {
-      emit(NewsGetScienceSuccessState());
     }
   }
 
-  // search for any key word
+  /// search for any key word
   void getSearch(String value) {
     emit(NewsGetSearchLoadingState());
 
@@ -151,7 +157,7 @@ class NewsCubit extends Cubit<NewsStates> {
     });
   }
 
-  // when ending with search
+  /// when ending with search
   void clearList({bool navigator}) {
     searchArticles = [];
     if (!navigator) emit(NewsGetSearchDoneState());

@@ -96,6 +96,9 @@ class MyApp extends StatelessWidget {
                 headline6: TextStyle(
                   color: Colors.white,
                 ),
+                subtitle1: TextStyle(
+                  color: Colors.white,
+                ),
               ),
               appBarTheme: AppBarTheme(
                 backwardsCompatibility: false,

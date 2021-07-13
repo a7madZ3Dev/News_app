@@ -11,29 +11,36 @@ class SportsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print(MediaQuery.of(context).size.height);
-    // print(MediaQuery.of(context).size.width);
     NewsCubit newsCubit = NewsCubit.get(context);
     return BlocConsumer<NewsCubit, NewsStates>(
       listener: (context, state) {},
       builder: (context, state) {
         return ScreenTypeLayout(
-
           /// height and width
           breakpoints:
               ScreenBreakpoints(watch: 150.0, desktop: 620.0, tablet: 480.0),
-          
+
           mobile: articleBuilder(
             newsCubit.sportArticles,
             context,
           ),
-          tablet: articleBuilderDeskTop(
+          tablet: articleBuilderTablet(
             newsCubit.sportArticles,
             context,
           ),
-          desktop: articleBuilderDeskTop(
-            newsCubit.sportArticles,
-            context,
+          desktop: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 2,
+                child: articleBuilderDeskTop(newsCubit.sportArticles, context),
+              ),
+              if(newsCubit.sportArticles.isNotEmpty) Expanded(
+                flex: 1,
+                child: articleBuilderDeskTopDetailes(
+                    context: context, topic: 'sport'),
+              )
+            ],
           ),
         );
       },
