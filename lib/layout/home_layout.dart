@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:conditional_builder/conditional_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 
 import '../shared/cubit/cubit.dart';
 import '../shared/cubit/states.dart';
@@ -8,6 +10,11 @@ import '../modules/search/search_screen.dart';
 import '../shared/components/components.dart';
 
 class Home extends StatelessWidget {
+  final SharedPreferences sharedPref;
+  const Home({
+    Key? key,
+    required this.sharedPref,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NewsCubit, NewsStates>(
@@ -24,7 +31,10 @@ class Home extends StatelessWidget {
                     Icons.search_rounded,
                   ),
                   onPressed: () {
-                    navigateTo(context, SearchScreen(),);
+                    navigateTo(
+                      context,
+                      SearchScreen(),
+                    );
                   },
                 ),
                 IconButton(
@@ -32,15 +42,16 @@ class Home extends StatelessWidget {
                     Icons.brightness_4_outlined,
                   ),
                   onPressed: () {
-                    BlocProvider.of<AppCubit>(context).changeAppMode();
+                    BlocProvider.of<AppCubit>(context)
+                        .changeAppMode(sharedPref: sharedPref);
                   },
                 ),
               ],
             ),
             body: ConditionalBuilder(
-              condition: newsCubit.businessArticles.length > 0 ,
+              condition: newsCubit.businessArticles.length > 0,
               builder: (context) =>
-                  newsCubit.screens[newsCubit.selectedPageIndex],
+                  newsCubit.screens[newsCubit.selectedPageIndex] as Widget,
               fallback: (context) => Center(child: CircularProgressIndicator()),
             ),
             bottomNavigationBar: BottomNavigationBar(

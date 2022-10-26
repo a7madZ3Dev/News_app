@@ -1,21 +1,22 @@
 import 'dart:io' show Platform;
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:desktop_window/desktop_window.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './shared/cubit/cubit.dart';
 import './layout/home_layout.dart';
 import './shared/cubit/states.dart';
 import './shared/bloc_observer.dart';
+import './shared/styles/styles/themes.dart';
 import './shared/network/remote/dio_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
+  final sharedPreferences = await SharedPreferences.getInstance();
   Bloc.observer = MyBlocObserver();
 
   if (!kIsWeb) {
@@ -25,10 +26,16 @@ void main() async {
     }
   }
 
-  runApp(MyApp());
+  runApp(MyApp(sharedPref: sharedPreferences));
 }
 
 class MyApp extends StatelessWidget {
+  final SharedPreferences sharedPref;
+  const MyApp({
+    required this.sharedPref,
+    Key? key,
+  }) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -41,7 +48,8 @@ class MyApp extends StatelessWidget {
             ..getScience(),
         ),
         BlocProvider<AppCubit>(
-          create: (BuildContext context) => AppCubit()..getAppMode(),
+          create: (BuildContext context) =>
+              AppCubit()..getAppMode(sharedPref: sharedPref),
         ),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
@@ -49,83 +57,12 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AppStates state) {
           AppCubit appCubit = AppCubit.get(context);
           return MaterialApp(
-            title: 'ToDo App',
+            title: 'News App',
             debugShowCheckedModeBanner: false,
-            theme: ThemeData(
-              scaffoldBackgroundColor: Colors.white,
-              primarySwatch: Colors.deepOrange,
-              textSelectionTheme:
-                  TextSelectionThemeData(cursorColor: Colors.deepOrange),
-              floatingActionButtonTheme: FloatingActionButtonThemeData(
-                  backgroundColor: Colors.deepOrange),
-              iconTheme: IconThemeData(color: Colors.black),
-              appBarTheme: AppBarTheme(
-                backwardsCompatibility: false,
-                elevation: 0.0,
-                centerTitle: true,
-                backgroundColor: Colors.white,
-                iconTheme: IconThemeData(color: Colors.black),
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Colors.white,
-                  statusBarIconBrightness: Brightness.dark,
-                ),
-                titleTextStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                type: BottomNavigationBarType.fixed,
-                showUnselectedLabels: true,
-                unselectedItemColor: Colors.black,
-                backgroundColor: Colors.white,
-                selectedItemColor: Colors.deepOrangeAccent,
-                elevation: 20.0,
-              ),
-            ),
-            darkTheme: ThemeData(
-              primarySwatch: Colors.deepOrange,
-              scaffoldBackgroundColor: Colors.black,
-              primaryColorDark: Colors.deepOrange,
-              textSelectionTheme:
-                  TextSelectionThemeData(cursorColor: Colors.deepOrange),
-              floatingActionButtonTheme: FloatingActionButtonThemeData(
-                  backgroundColor: Colors.deepOrange),
-              textTheme: TextTheme(
-                headline6: TextStyle(
-                  color: Colors.white,
-                ),
-                subtitle1: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              appBarTheme: AppBarTheme(
-                backwardsCompatibility: false,
-                elevation: 0.0,
-                centerTitle: true,
-                color: Colors.black,
-                iconTheme: IconThemeData(color: Colors.white),
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  statusBarColor: Colors.black,
-                  statusBarIconBrightness: Brightness.light,
-                ),
-                titleTextStyle: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-              bottomNavigationBarTheme: BottomNavigationBarThemeData(
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Colors.black,
-                  showUnselectedLabels: true,
-                  unselectedItemColor: Colors.white,
-                  selectedItemColor: Colors.deepOrangeAccent,
-                  elevation: 20.0),
-            ),
+            theme: lightTheme,
+            darkTheme: darkTheme,
             themeMode: appCubit.isDark ? ThemeMode.dark : ThemeMode.light,
-            home: Home(),
+            home: Home(sharedPref: sharedPref),
           );
         },
       ),

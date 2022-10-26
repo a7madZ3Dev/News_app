@@ -7,7 +7,7 @@ import '../../shared/cubit/states.dart';
 import '../../shared/components/components.dart';
 
 class BusinessScreen extends StatelessWidget {
-  const BusinessScreen({Key key}) : super(key: key);
+  const BusinessScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     NewsCubit newsCubit = NewsCubit.get(context);
@@ -16,7 +16,7 @@ class BusinessScreen extends StatelessWidget {
       builder: (context, state) {
         return ScreenTypeLayout(
           breakpoints:
-              ScreenBreakpoints(watch: 150.0, desktop: 660.0, tablet: 480.0),
+              ScreenBreakpoints(watch: 150.0, tablet: 480.0, desktop: 660.0),
           mobile: articleBuilder(
             newsCubit.businessArticles,
             context,
@@ -33,11 +33,12 @@ class BusinessScreen extends StatelessWidget {
                 child:
                     articleBuilderDeskTop(newsCubit.businessArticles, context),
               ),
-              if(newsCubit.businessArticles.isNotEmpty) Expanded(
-                flex: 1,
-                child: articleBuilderDeskTopDetailes(
-                    context: context, topic: 'business'),
-              )
+              if (newsCubit.businessArticles.isNotEmpty)
+                Expanded(
+                  flex: 1,
+                  child: articleBuilderDeskTopDetails(
+                      context: context, topic: 'business'),
+                )
             ],
           ),
         );

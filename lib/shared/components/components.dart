@@ -1,6 +1,9 @@
+import 'dart:io' show Platform;
+
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:conditional_builder/conditional_builder.dart';
+import 'package:flutter/foundation.dart';
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 
 import '../../shared/cubit/cubit.dart';
 import '../../models/article_model.dart';
@@ -8,22 +11,23 @@ import '../../modules/web_view/webView.dart';
 
 /// form field
 Widget defaultFormField({
-  TextEditingController controller,
-  @required TextInputType type,
-  Function onSubmit,
-  Function onChange,
-  Function onTap,
+  required TextEditingController controller,
+  required TextInputType type,
+  void Function(String value)? onSubmit,
+  void Function(String value)? onChange,
+  VoidCallback? onTap,
   bool isPassword = false,
-  @required Function validate,
-  @required String label,
-  @required IconData prefix,
-  IconData suffix,
-  Function suffixPressed,
+  String? Function(String? value)? validate,
+  required String label,
+  required IconData prefix,
+  IconData? suffix,
+  VoidCallback? suffixPressed,
   bool isClickable = true,
   bool readOnly = false,
   bool showCursor = true,
-  FocusNode focusNodeField,
-  Color fillColor,
+  FocusNode? focusNodeField,
+  TextInputAction? textInputAction,
+  Color? fillColor,
 }) =>
     TextFormField(
       controller: controller,
@@ -37,6 +41,7 @@ Widget defaultFormField({
       showCursor: showCursor,
       readOnly: readOnly,
       focusNode: focusNodeField,
+      textInputAction: textInputAction,
       decoration: InputDecoration(
         labelText: label,
         filled: true,
@@ -59,10 +64,12 @@ Widget defaultFormField({
 /// for single item on mobile screen
 Widget buildArticleItem(Article article, BuildContext context) => InkWell(
       onTap: () {
-        navigateTo(
-          context,
-          WebViewScreen(article.articleUrl),
-        );
+        if (!kIsWeb && !Platform.isWindows) {
+          navigateTo(
+            context,
+            WebViewScreen(article.articleUrl),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -87,10 +94,10 @@ Widget buildArticleItem(Article article, BuildContext context) => InkWell(
               ),
               child: article.imageUrl != null
                   ? Image.network(
-                      article.imageUrl,
+                      article.imageUrl!,
                       fit: BoxFit.cover,
                       errorBuilder: (BuildContext context, Object exception,
-                          StackTrace stackTrace) {
+                          StackTrace? stackTrace) {
                         return Image(
                           image: AssetImage(
                             'assets/placeholder.png',
@@ -136,9 +143,9 @@ Widget buildArticleItem(Article article, BuildContext context) => InkWell(
                 ),
               ),
             ),
-            SizedBox(
-              width: 15.0,
-            ),
+            // SizedBox(
+            //   width: 15.0,
+            // ),
           ],
         ),
       ),
@@ -147,7 +154,7 @@ Widget buildArticleItem(Article article, BuildContext context) => InkWell(
 /// separator widget
 Widget myDivider() => Padding(
       padding: const EdgeInsetsDirectional.only(
-        start: 20.0,
+        start: 0.0,
       ),
       child: Container(
         width: double.infinity,
@@ -174,10 +181,12 @@ Widget articleBuilder(List<Article> list, BuildContext context,
 /// for single item on Tablet screen
 Widget buildArticleTabletItem(Article article, BuildContext context) => InkWell(
       onTap: () {
-        navigateTo(
-          context,
-          WebViewScreen(article.articleUrl),
-        );
+        if (!kIsWeb && !Platform.isWindows) {
+          navigateTo(
+            context,
+            WebViewScreen(article.articleUrl),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -197,10 +206,10 @@ Widget buildArticleTabletItem(Article article, BuildContext context) => InkWell(
                   ),
                   child: article.imageUrl != null
                       ? Image.network(
-                          article.imageUrl,
+                          article.imageUrl!,
                           fit: BoxFit.cover,
                           errorBuilder: (BuildContext context, Object exception,
-                              StackTrace stackTrace) {
+                              StackTrace? stackTrace) {
                             return Image(
                               image: AssetImage(
                                 'assets/placeholder.png',
@@ -287,10 +296,10 @@ Widget buildArticleDeskTopItem(
                 ),
                 child: article.imageUrl != null
                     ? Image.network(
-                        article.imageUrl,
+                        article.imageUrl!,
                         fit: BoxFit.cover,
                         errorBuilder: (BuildContext context, Object exception,
-                            StackTrace stackTrace) {
+                            StackTrace? stackTrace) {
                           return Image(
                             image: AssetImage(
                               'assets/placeholder.png',
@@ -321,10 +330,11 @@ Widget buildArticleDeskTopItem(
                       Expanded(
                         child: Text(
                           '${article.title}',
-                          style: Theme.of(context).textTheme.headline6.copyWith(
-                                fontSize: 16.0,
-                                height: 2,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.headline6?.copyWith(
+                                    fontSize: 16.0,
+                                    height: 2,
+                                  ),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           softWrap: true,
@@ -366,8 +376,9 @@ Widget articleBuilderDeskTop(List<Article> list, BuildContext context,
     );
 
 /// created for the desktop screen right side
-Widget articleBuilderDeskTopDetailes({BuildContext context, String topic}) {
-  List<Article> list;
+Widget articleBuilderDeskTopDetails(
+    {required String topic, BuildContext? context}) {
+  late List<Article> list;
   int index = NewsCubit.get(context).articleSelected;
   switch (topic) {
     case 'business':
@@ -405,10 +416,10 @@ Widget articleBuilderDeskTopDetailes({BuildContext context, String topic}) {
               ),
               child: list[index].imageUrl != null
                   ? Image.network(
-                      list[index].imageUrl,
+                      list[index].imageUrl!,
                       fit: BoxFit.cover,
                       errorBuilder: (BuildContext context, Object exception,
-                          StackTrace stackTrace) {
+                          StackTrace? stackTrace) {
                         return Image(
                           image: AssetImage(
                             'assets/placeholder.png',
@@ -429,12 +440,12 @@ Widget articleBuilderDeskTopDetailes({BuildContext context, String topic}) {
             height: 8.0,
           ),
           Expanded(
-            flex: 3,
+            flex: 2,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 list[index].description ?? list[index].title,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context!).textTheme.subtitle1,
               ),
             ),
           )

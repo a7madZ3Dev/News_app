@@ -18,21 +18,20 @@ class SearchScreen extends StatelessWidget {
         return WillPopScope(
           onWillPop: () async {
             searchController.clear();
-            Navigator.of(context).pop();
             NewsCubit.get(context).clearList(navigator: true);
             return true;
           },
           child: Scaffold(
             appBar: AppBar(
-              automaticallyImplyLeading: false,
-              leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    searchController.clear();
-                    Navigator.of(context).pop();
-                    NewsCubit.get(context).clearList(navigator: true);
-                  }),
-            ),
+                // automaticallyImplyLeading: false,
+                // leading: IconButton(
+                //     icon: Icon(Icons.arrow_back),
+                //     onPressed: () {
+                //       searchController.clear();
+                //       Navigator.of(context).pop();
+                //       NewsCubit.get(context).clearList(navigator: true);
+                //     }),
+                ),
             body: Column(
               children: [
                 Padding(
@@ -41,18 +40,22 @@ class SearchScreen extends StatelessWidget {
                     controller: searchController,
                     type: TextInputType.text,
                     onChange: (String value) {
-                      if (value != null && value.isNotEmpty)
+                      if (value.isEmpty)
+                        BlocProvider.of<NewsCubit>(context)
+                            .clearList(navigator: false);
+                    },
+                    // validate: (String? value) {
+                    //   if (value!.trim().isEmpty) {
+                    //     return 'search must not be empty';
+                    //   }
+                    //   return null;
+                    // },
+                    onSubmit: (String value) {
+                      if (value.isNotEmpty)
                         BlocProvider.of<NewsCubit>(context).getSearch(value);
-                      else
-                        NewsCubit.get(context).clearList(navigator: false);
                     },
-                    validate: (String value) {
-                      if (value.isEmpty) {
-                        return 'search must not be empty';
-                      }
-                      return null;
-                    },
-                    label: 'Search',
+                    textInputAction: TextInputAction.search,
+                    label: 'Search now',
                     prefix: Icons.search,
                     fillColor: BlocProvider.of<AppCubit>(context).isDark
                         ? Colors.white

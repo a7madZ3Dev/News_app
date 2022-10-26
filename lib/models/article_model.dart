@@ -1,20 +1,17 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-
 class Article {
   final String title;
-  final String description;
+  final String? description;
   final String articleUrl;
-  final String imageUrl;
-  final String content;
+  final String? imageUrl;
+  final String? content;
   final DateTime publishedAt;
   Article({
-    @required this.title,
-    @required this.description,
-    @required this.articleUrl,
-    @required this.imageUrl,
-    @required this.content,
-    @required this.publishedAt,
+    required this.title,
+    this.description,
+    required this.articleUrl,
+    this.imageUrl,
+    this.content,
+    required this.publishedAt,
   });
 
   factory Article.fromJson(Map<String, dynamic> jsonData) {

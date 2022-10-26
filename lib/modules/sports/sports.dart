@@ -7,7 +7,7 @@ import '../../shared/cubit/states.dart';
 import '../../shared/components/components.dart';
 
 class SportsScreen extends StatelessWidget {
-  const SportsScreen({Key key}) : super(key: key);
+  const SportsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class SportsScreen extends StatelessWidget {
         return ScreenTypeLayout(
           /// height and width
           breakpoints:
-              ScreenBreakpoints(watch: 150.0, desktop: 620.0, tablet: 480.0),
+              ScreenBreakpoints(watch: 150.0, tablet: 480.0, desktop: 660.0),
 
           mobile: articleBuilder(
             newsCubit.sportArticles,
@@ -35,11 +35,12 @@ class SportsScreen extends StatelessWidget {
                 flex: 2,
                 child: articleBuilderDeskTop(newsCubit.sportArticles, context),
               ),
-              if(newsCubit.sportArticles.isNotEmpty) Expanded(
-                flex: 1,
-                child: articleBuilderDeskTopDetailes(
-                    context: context, topic: 'sport'),
-              )
+              if (newsCubit.sportArticles.isNotEmpty)
+                Expanded(
+                  flex: 1,
+                  child: articleBuilderDeskTopDetails(
+                      context: context, topic: 'sport'),
+                )
             ],
           ),
         );

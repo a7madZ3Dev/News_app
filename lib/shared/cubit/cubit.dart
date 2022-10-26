@@ -1,7 +1,6 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../cubit/states.dart';
 import '../components/constants.dart';
@@ -68,7 +67,7 @@ class NewsCubit extends Cubit<NewsStates> {
   }
 
   /// Change the state of the selected item
-  void changeItemSelectedState({int index}) {
+  void changeItemSelectedState({required int index}) {
     articleSelected = index;
     emit(NewsItemSelectedState());
   }
@@ -158,7 +157,7 @@ class NewsCubit extends Cubit<NewsStates> {
   }
 
   /// when ending with search
-  void clearList({bool navigator}) {
+  void clearList({required bool navigator}) {
     searchArticles = [];
     if (!navigator) emit(NewsGetSearchDoneState());
   }
@@ -173,14 +172,15 @@ class AppCubit extends Cubit<AppStates> {
   bool isDark = false;
 
   //change theme mode
-  void changeAppMode() {
+  void changeAppMode({required SharedPreferences sharedPref}) {
     isDark = !isDark;
-    CacheHelper.saveMode(isDark).then((value) => emit(AppChangeModeState()));
+    CacheHelper.saveMode(mode: isDark, sharedPre: sharedPref)
+        .then((value) => emit(AppChangeModeState()));
   }
 
   //get theme mode
-  void getAppMode() {
-    CacheHelper.getMode().then((value) {
+  void getAppMode({required SharedPreferences sharedPref}) {
+    CacheHelper.getMode(sharedPref: sharedPref).then((value) {
       isDark = value;
       emit(AppChangeModeState());
     });
