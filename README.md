@@ -28,8 +28,8 @@ flutter run
 
 <br>
 
-## 📱 Screen Shots ### 🌞 Light Mode Theme
-
+## 📱 Screen Shots 
+### 🌞 Light Mode Theme
 <img alt="jpg" src="preview/view_1.jpg" width= "300" /> <img alt="jpg" src="preview/view_2.jpg" width= "300" /> <img alt="jpg" src="preview/view_3.jpg" width= "300" />
 
 ### 🌜 Dark Mode Theme
@@ -53,8 +53,6 @@ API Used: https://newsapi.org/
 ✅ Go to the source of the news 
 
 ✅ Dark Mode
-
-
 <br>
 
 ## 🔑 License
